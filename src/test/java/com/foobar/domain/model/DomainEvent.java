@@ -9,8 +9,8 @@ public abstract class DomainEvent implements Event {
 	private Date createdOn;
 	private transient String topic;
 	
-	protected DomainEvent() {
-		this.setCreatedOn(new Date());
+	protected DomainEvent(Date createdOn) {
+		this.setCreatedOn(createdOn);
 		this.setTopic("domainEventsChannel");
 		this.setEventVersion(1);
 	}

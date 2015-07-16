@@ -1,22 +1,18 @@
 package org.springframework.integration.test.eventbus;
 
+import java.util.Date;
 import junit.framework.Assert;
-
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
-import org.powermock.core.classloader.annotations.PrepareForTest;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.support.ClassPathXmlApplicationContext;
-
-import com.foobar.application.FooBarApplicationService;
 import com.foobar.domain.eventstore.EventStore;
 import com.foobar.domain.model.DomainEvent;
 import com.foobar.domain.model.DomainEventPublisher;
-
+import org.springframework.context.ApplicationContext;
+import com.foobar.application.FooBarApplicationService;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 @RunWith(JUnit4.class)
-@PrepareForTest(DomainEventPublisher.class)
 public class SpringEventbusTestcase{
 
 	@Test
@@ -43,7 +39,7 @@ public class SpringEventbusTestcase{
 		applicationService.updateBar();
 		
 		// Test sending arbitrary domain to validate that it gets consumed by BaseFooBarApplicationService
-		DomainEventPublisher.publish(new DomainEvent(){});
+		DomainEventPublisher.publish(new DomainEvent(new Date()){});
 		
 		EventStore eventStore = context.getBean(EventStore.class);		
 		

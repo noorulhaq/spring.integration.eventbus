@@ -2,40 +2,28 @@
 <beans xmlns="http://www.springframework.org/schema/beans"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xmlns:int="http://www.springframework.org/schema/integration"
-	xmlns:stream="http://www.springframework.org/schema/integration/stream"
 	xmlns:context="http://www.springframework.org/schema/context"
 	xsi:schemaLocation="http://www.springframework.org/schema/beans
 		http://www.springframework.org/schema/beans/spring-beans.xsd
 		http://www.springframework.org/schema/context
 		http://www.springframework.org/schema/context/spring-context.xsd
 		http://www.springframework.org/schema/integration
-		http://www.springframework.org/schema/integration/spring-integration.xsd
-		http://www.springframework.org/schema/integration/stream
-      	http://www.springframework.org/schema/integration/stream/spring-integration-stream.xsd">
+		http://www.springframework.org/schema/integration/spring-integration.xsd">
 	
 	<context:annotation-config />
-		
+  
+  	<!-- Helper utility used by domain to publish event using Eventbus -->
 	<bean class="com.foobar.domain.model.DomainEventPublisher"/>	
-		
-	<bean id="fooBarApplicationService" class="com.foobar.application.FooBarApplicationService"/>
-		
-	<bean id="eventBus" class="org.springframework.integration.eventbus.SpringEventBus" />
 	
-	<bean id="eventStore" class="com.foobar.infrastructure.eventstore.InMemoryEventStore" />
-	
-	<int:publish-subscribe-channel id="domainEventsChannel"/>
-	
-	<int:payload-type-router input-channel="domainEventsChannel" default-output-channel="nullChannel">
-		<int:mapping type="com.foobar.domain.model.BarDomainEvent" channel="barEvents"/>
-		<int:mapping type="com.foobar.domain.model.FooDomainEvent" channel="fooEvents"/>
-	</int:payload-type-router>
-	
-	<int:publish-subscribe-channel id="fooEvents"/>	
-	<int:publish-subscribe-channel id="barEvents"/>
+	<bean id="eventBus" class="org.springframework.integration.eventbus.SpringEventBus" />		
+
+	<!-- Eventstore where all events has to be persisted -->	
+	<bean id="eventStore" class="com.foobar.infrastructure.eventstore.InMemoryEventStore" />	
 	
 	<int:service-activator input-channel="domainEventsChannel" ref="eventStore" />
 	
-	<int:service-activator input-channel="barEvents" ref="fooBarApplicationService"/>
-
+	<!-- Publish subscriber channel used by EventBus -->
+  	<int:publish-subscribe-channel id="domainEventsChannel"/>
 	
+	<import resource="foo-bar-integration-flow.xml"/>
 </beans>
