@@ -7,7 +7,9 @@ import java.util.Map;
 import java.util.Set;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+
 import org.springframework.messaging.Message;
+
 import com.google.common.base.Objects;
 import com.google.common.base.Throwables;
 import com.google.common.cache.CacheBuilder;
@@ -18,6 +20,7 @@ import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Maps;
 import com.google.common.reflect.TypeToken;
 import com.google.common.util.concurrent.UncheckedExecutionException;
+
 import static com.google.common.base.Preconditions.checkArgument;
 
 
@@ -26,7 +29,7 @@ public class EventSubscriberMethodSelectorUtil {
 	
 	private EventSubscriberMethodSelectorUtil() {}
 	
-	protected static void selectSubcriberMethodAndInvoke(final Message<?> message,final Object subscriber) {
+	protected static void selectSubcriberMethodAndInvoke(final Message<?> message,final Object subscriber){
 		
 		try{
 			Map<Class<?>, Method> subscriberMethods = findAllSubscriberMethods(subscriber);
@@ -44,7 +47,7 @@ public class EventSubscriberMethodSelectorUtil {
 				subscriberMethod.invoke(subscriber, event);
 			}
 		} catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
-			e.printStackTrace();
+			throw new RuntimeException(e);
 		}
 	}
 	
